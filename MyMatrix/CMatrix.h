@@ -5,10 +5,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-//先写普通的计算函数
-//再把计算函数做成函数模板
-//把计算函数放到类中（查一下类的构造、析构、深拷贝）
-//把类做成模板（查一下类模板和函数模板区别用法）
 
 //矩阵类，声明矩阵的定义及处理函数
 class CMatrix
@@ -24,7 +20,7 @@ public:
 	virtual ~CMatrix();//不作为基类时应去掉关键字
 
 	double& CMatrix::operator()(int i, int j)const;
-	double* operator[](int i) { return m_lpBuf + (i-1)*m_nColumns; }//注意this加括号， (*this)[i][j]
+	double* operator[](int i) { return m_lpBuf + i*m_nColumns; }//注意this加括号， (*this)[i][j] 输入是从0开始
 	void resize(int, int);//重新分配空间
 	friend std::istream &operator >> (std::istream&,CMatrix&);
 	friend std::ostream &operator << (std::ostream&, CMatrix&);     // 输出到屏幕
@@ -45,30 +41,25 @@ public:
 	CMatrix getrow(int index); // 返回第index 行,索引从1算起
 	CMatrix getcol(int index); // 返回第index 列,索引从1算起
 
-	
-	//CMatrix cov(_In_opt_ bool flag = true);   //协方差阵 或者样本方差
-	//double det();   //行列式
-	//CMatrix solveAb(CMatrix &obj);  // b是行向量或者列向量
-	//CMatrix diag();  //返回对角线元素
-	//				//Matrix asigndiag();  //对角线元素
-	//CMatrix T()const;   //转置
-	//void sort(bool);//true为从小到大
-	//CMatrix adjoint();
-	//CMatrix inverse();
-	//void QR(_Out_ CMatrix&, _Out_ CMatrix&)const;
-	//CMatrix eig_val(_In_opt_ Index_T _iters = 1000);
-	//CMatrix eig_vect(_In_opt_ Index_T _iters = 1000);
+	CMatrix T()const;   //转置
+	CMatrix cov(_In_opt_ bool flag = true);   //协方差阵
+	double det();   //行列式
+	CMatrix diag();  //取对角线元素
+	CMatrix adjoint();//返回伴随阵
+	CMatrix inverse();//求矩阵的逆
+	void QR(_Out_ CMatrix&, _Out_ CMatrix&)const;//QR分解
+	CMatrix eig_val(_In_opt_ int _iters = 1000); //求特征值
+	CMatrix eig_vect(_In_opt_ int _iters = 1000);//特征向量
+	void sort(bool);//对矩阵元素排序，true为从小到大
+	CMatrix solveAb(CMatrix &obj);  // 克拉默法则求解Ax=b   b是行向量或者列向量
 
-	//double norm1();//1范数
-	//double norm2();//2范数
-	//double mean();// 矩阵均值
-	//double*operator[](int i) { return m_lpBuf + i*m_nColumns; }//注意this加括号， (*this)[i][j]
-	//void zeromean(_In_opt_  bool flag = true);//默认参数为true计算列
-	//void normalize(_In_opt_  bool flag = true);//默认参数为true计算列
-	//CMatrix exponent(double x);//每个元素x次幂
-	//CMatrix  eye();//对角阵
-	//void  maxlimit(double max, double set = 0);//对角阵
-
+	double norm1();	//1范数
+	double norm2();	//2范数
+	double mean();	// 矩阵均值
+	void zeromean(_In_opt_  bool flag = true);	//中心化（零均值化）,默认参数为true计算列均值，false计算行均值
+	void normalize(_In_opt_  bool flag = true);	//标准化（归一化）,默认参数为true计算列，false计算行均值
+	CMatrix exponent(double x);//每个元素求x次幂
+	CMatrix eye();//求对角阵
 };
 
 class Bounds_error                                          //下标越界异常

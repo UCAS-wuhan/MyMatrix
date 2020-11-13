@@ -4,6 +4,8 @@ CMatrix类为矩阵类，模仿MATLAB的功能实现矩阵的基本操作。
 https://blog.csdn.net/sinat_36219858/article/details/80231468
 2、	https://blog.csdn.net/zhoudewen66/article/details/50409237
 3、	https://blog.csdn.net/yuanjilai/article/details/7324363
+
+4、https://github.com/piratf/MatrixH
 矩阵类的结构为：
 	int  m_nRows; // 矩阵的行数
 	int  m_nColumns; // 矩阵的列数
@@ -19,9 +21,21 @@ https://blog.csdn.net/sinat_36219858/article/details/80231468
 
 	目前欠缺功能：
 	1、不能直接使用“<<”操作符对矩阵进行赋值
-	2、
+	2、不能使用（）按照MATLAB习惯进行单个元素赋值。（[]可以进行单个元素赋值，但是使用的是C++习惯，从0开始计数）
+	3、读取矩阵的第N行（列）到第M行（列）
+	4、矩阵的合并
 二、功能实现是为了MATLAB中的关于矩阵的转置、求逆、求解等数值计算功能的调用。具体包含以下内容：
+	1、矩阵的转置：例如B=A.T();
+	2、求矩阵的协方差阵。使用时参数可不填，默认为true,对m*n矩阵，默认计算协方差方法为1 / (m - 1)，某些场合下协方差计算方法为1 / m，此时将参数设为flase。
+	3、取对角元素函数diag()，返回值为列向量。
+	4、求伴随矩阵adjoint();	求逆矩阵inverse();	
+	5、克拉默法则求解非齐次线性方程组。例如解公式Ax=b中的x，Matrix x= A.solveAb(b); 
+	6、求矩阵的1范数double num=A.norm1();2范数double num=A.norm2();均值double num=A.mean()
+	7、数据预处理的零均值化A.zeromean(true)与归一化A.normalize(true);默认参数为true计算列，false计算行均值
 
 
 常见的错误排查：
-	涉及到矩阵行列大小的，C++从0就开始计算，MATLAB从1开始算，编程时程序有些是按照C习惯编程，有些是按照MATLAB习惯，会出现问题。
+	涉及到矩阵行列大小的，C++从0就开始计算，MATLAB从1开始算，编程时程序有些是按照C习惯编程，有些是按照MATLAB习惯，边界会出现问题。
+	发生错误时可能是因为&和const使用不当，造成数据被更改。
+	关于QR矩阵分解的函数没有仔细看，以后可能会出现不适用的情况。
+	目前没考虑多线程情况下是否安全。
